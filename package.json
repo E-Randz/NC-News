@@ -9,6 +9,8 @@
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
     "seed:db": "npm run migrate:rollback && npm run migrate:latest && knex seed:run",
+    "dev": "nodemon listen.js",
+    "test": "npm run seed:db && mocha ./spec/spec.js",
     "lint": "eslint ./",
     "pre-commit": "npm t",
     "posttest": "npm run lint"
@@ -25,8 +27,10 @@
   },
   "homepage": "https://github.com/northcoders/BE2-NC-Knews#readme",
   "dependencies": {
+    "chai": "^4.2.0",
     "knex": "^0.15.2",
-    "pg": "^7.6.1"
+    "pg": "^7.6.1",
+    "supertest": "^3.3.0"
   },
   "devDependencies": {
     "eslint": "^5.9.0",
