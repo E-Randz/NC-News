@@ -19,6 +19,8 @@ Data has been provided for both testing and development environments so you will
 
 1. You should have separate tables for topics, articles, users and comments, and you will need to think carefully about the order in which you seed your data.
 
+topic > user > article > comment
+
 - Each topic should have:
 
   - `slug` field which is a unique string that acts as the table's primary key
