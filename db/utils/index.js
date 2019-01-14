@@ -1,12 +1,11 @@
-const fixUserAndDate = (data) => {
-  return data.map((item) => {
-    const newItem = { ...item };
-    newItem.username = newItem.created_by;
-    newItem.created_at = new Date(newItem.created_at);
-    delete newItem.created_by;
-    return newItem;
-  }, {});
-};
+const fixUserAndDate = data => data.map((item) => {
+  const newItem = { ...item };
+  newItem.username = newItem.created_by;
+  newItem.created_at = new Date(newItem.created_at);
+  delete newItem.created_by;
+  return newItem;
+}, {});
+
 
 const formatCommentData = (data, articles) => {
   // create lookup for the title of the article

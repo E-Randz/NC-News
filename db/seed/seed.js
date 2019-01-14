@@ -1,11 +1,11 @@
-const { articleData, topicData, userData, commentData } = require('../data');
+const {
+  articleData, topicData, userData, commentData,
+} = require('../data');
 const { fixUserAndDate, formatCommentData } = require('../utils');
 
 exports.seed = function (knex, Promise) {
   return knex('topics').insert(topicData)
-    .then(() => {
-      return knex('users').insert(userData);
-    })
+    .then(() => knex('users').insert(userData))
     .then(() => {
       const formattedArticleData = fixUserAndDate(articleData);
       return knex('articles').insert(formattedArticleData).returning('*');
@@ -15,6 +15,6 @@ exports.seed = function (knex, Promise) {
       return knex('comments').insert(formattedCommentData);
     })
     .catch((err) => {
-      console.log(err);
+      throw err;
     });
 };

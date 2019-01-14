@@ -8,11 +8,9 @@ const connection = require('../db/connection');
 
 
 describe('/api', () => {
-  beforeEach(() => {
-    return connection.migrate.rollback()
-      .then(() => connection.migrate.latest())
-      .then(() => connection.seed.run());
-  });
+  beforeEach(() => connection.migrate.rollback()
+    .then(() => connection.migrate.latest())
+    .then(() => connection.seed.run()));
   after(() => connection.destroy());
   describe('/topics', () => {
     it('GET request status:200 responds with array of objects, each containing slug and description', () => {
@@ -24,14 +22,28 @@ describe('/api', () => {
           expect(body.topics[1]).to.have.keys('slug', 'description');
         });
     });
-    it('GET request status: 201 responds with array of objects with new topic added', () => {
-      const postBody = { slug: 'Songs', description: 'All your signsongy needs' };
+    it('POST request status: 201 responds with the new object that was added', () => {
+      const postBody = { slug: 'Songs', description: 'All your singsongy needs' };
       return request
         .post('/api/topics')
         .send(postBody)
         .expect(201)
         .then(({ body }) => {
-          expect(body.topics.length).to.equal(3);
+          expect(body.topic[0]).to.have.keys('slug', 'description');
+          expect(body.topic[0].slug).to.equal('Songs');
+        });
+    });
+    it('POST request status: 422 responds with error when unique id already exists in database', () => {
+      const postBody = {
+        description: 'The man, the Mitch, the legend',
+        slug: 'mitch',
+      };
+      return request
+        .post('/api/topics')
+        .send(postBody)
+        .expect(422)
+        .then(({ body }) => {
+          console.log(body);
         });
     });
   });

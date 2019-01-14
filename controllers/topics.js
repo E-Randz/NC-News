@@ -9,4 +9,15 @@ const sendTopics = (req, res, next) => {
     .catch(next);
 };
 
-module.exports = { sendTopics };
+const addTopic = (req, res, next) => {
+  const newTopic = req.body;
+  connection('topics')
+    .insert(newTopic)
+    .returning('*')
+    .then((topic) => {
+      res.status(201).json({ topic });
+    })
+    .catch(err => res.json(err));
+};
+
+module.exports = { sendTopics, addTopic };
