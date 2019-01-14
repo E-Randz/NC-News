@@ -41,6 +41,10 @@ topic > user > article > comment
   - `username` field that references a user's primary key.
   - `created_at` defaults to the current date
 
+  <!-- need to change created_by to username
+   -->
+   <!-- fix timestamp -->
+
 * Each comment should have:
   - `comment_id` which is the primary key
   - `username` field that references a user's primary key
@@ -48,6 +52,11 @@ topic > user > article > comment
   - `votes` defaults to 0
   - `created_at` defaults to the current date
   - `body`
+
+  <!-- change belongs_to to article_id need to create a lookup by returning article information and a key of the title and the value as the id-->
+  <!-- created_by to username -->
+  <!-- fix timestamp -->
+
 
 - NOTE: psql expects Date types to be in a date format - not a timestamp! However, you can easily turn a timestamp into a date using js...
 
