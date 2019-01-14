@@ -1,10 +1,11 @@
 const fixUserAndDate = (data) => {
   return data.map((item) => {
-    item.username = item.created_by;
-    item.created_at = new Date(item.created_at);
-    delete item.created_by;
-    return item;
-  });
+    const newItem = { ...item };
+    newItem.username = newItem.created_by;
+    newItem.created_at = new Date(newItem.created_at);
+    delete newItem.created_by;
+    return newItem;
+  }, {});
 };
 
 const formatCommentData = (data, articles) => {
@@ -15,9 +16,10 @@ const formatCommentData = (data, articles) => {
   }, {});
   // process data to fix data and username, then fix article_id
   return fixUserAndDate(data).map((comment) => {
-    comment.article_id = articleLookup[comment.belongs_to];
-    delete comment.belongs_to;
-    return comment;
+    const newComment = { ...comment };
+    newComment.article_id = articleLookup[newComment.belongs_to];
+    delete newComment.belongs_to;
+    return newComment;
   });
 };
 
