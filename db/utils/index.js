@@ -1,14 +1,24 @@
-exports.formatArticle = (articles) => {
-  articles.map((article) => {
-    article.username = article.created_by;
-    delete article.created_by;
+const fixUserAndDate = (data) => {
+  return data.map((item) => {
+    item.username = item.created_by;
+    item.created_at = new Date(item.created_at);
+    delete item.created_by;
+    return item;
+  });
+};
 
-  })
-}
+const formatCommentData = (data, articles) => {
+  // create lookup for the title of the article
+  const articleLookup = articles.reduce((acc, curr) => {
+    acc[curr.title] = curr.article_id;
+    return acc;
+  }, {});
+  // process data to fix data and username, then fix article_id
+  return fixUserAndDate(data).map((comment) => {
+    comment.article_id = articleLookup[comment.belongs_to];
+    delete comment.belongs_to;
+    return comment;
+  });
+};
 
-// let formatDate = function(dateMS) {
-//   let date = new Date(dateMS);
-//   console.log(date.toString().slice(0, 11));
-// };
-
-// formatDate(1547470728277);
+module.exports = { fixUserAndDate, formatCommentData };

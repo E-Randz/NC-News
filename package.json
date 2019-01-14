@@ -8,7 +8,7 @@
     "make:migrate": "knex migrate:make",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
-    "seed:db": "npm run migrate:rollback && npm run migrate:latest & knex seed:run",
+    "seed:db": "npm run migrate:rollback && npm run migrate:latest && knex seed:run",
     "lint": "eslint ./",
     "pre-commit": "npm t",
     "posttest": "npm run lint"
