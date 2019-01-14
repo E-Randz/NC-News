@@ -1,8 +1,12 @@
 const connection = require('../db/connection');
 
 const sendTopics = (req, res, next) => {
-  console.log('hi');
-  res.send('hi');
+  connection('topics')
+    .select('*')
+    .then((topics) => {
+      res.status(200).json({ topics });
+    })
+    .catch(next);
 };
 
 module.exports = { sendTopics };
