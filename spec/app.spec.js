@@ -176,7 +176,7 @@ describe('/api', () => {
       });
     });
   });
-  describe.only('/articles', () => {
+  describe('/articles', () => {
     it('GET status 200 responds with articles containing the correct keys', () => {
       return request
         .get('/api/articles')
@@ -229,19 +229,30 @@ describe('/api', () => {
     });
     it('GET status 200 returns results offset by page number', () => {
       return request
-        .get('/api/articles?p=2')
+        .get('/api/articles?p=2&limit=4')
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles[0].title).to.equal('Am I a cat?');
+          expect(body.articles[0].title).to.equal('UNCOVERED: catspiracy to bring down democracy');
         });
     });
-    // it('GET status 200 ignores other queries that aren\'t valid', () => {
-    //   return request
-    //     .get('/api/topics/mitch/articles?hello=2')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //       expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
-    //     });
-    // });
+    it('GET status 200 ignores other queries that aren\'t valid', () => {
+      return request
+        .get('/api/articles?hello=2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+        });
+    });
+    describe.only('/:article_id', () => {
+      it('GET request status 200 sends one article object when passed a valid id', () => {
+        return request
+          .get('/api/articles/2')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article).to.have.keys('author', 'title', 'article_id', 'body', 'votes', 'comment_count', 'created_at', 'topic');
+            expect(body.article.title).to.equal('Sony Vaio; or, The Laptop');
+          });
+      });
+    });
   });
 });

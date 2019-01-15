@@ -18,3 +18,17 @@ exports.sendAllArticles = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.sendOneArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  connection('articles')
+    .select('articles.username as author', 'title', 'articles.article_id', 'articles.body', 'articles.votes', 'articles.created_at', 'topic')
+    .where('articles.article_id', '=', article_id)
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .count('comments.comment_id as comment_count')
+    .groupBy('articles.article_id')
+    .then(([article]) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
+};
