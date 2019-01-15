@@ -40,4 +40,17 @@ const sendArticlesByTopic = (req, res, next) => {
     })
     .catch(next);
 };
-module.exports = { sendTopics, addTopic, sendArticlesByTopic };
+
+const addNewArticle = (req, res, next) => {
+  const newArticle = { topic: req.params.topic, ...req.body };
+  connection('articles')
+    .insert(newArticle)
+    .returning('*')
+    .then(([article]) => {
+      res.status(201).send(article);
+    })
+    .catch(next);
+};
+module.exports = {
+  sendTopics, addTopic, sendArticlesByTopic, addNewArticle,
+};

@@ -127,6 +127,42 @@ describe('/api', () => {
             expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
           });
       });
+      it('POST status 201 accepts an object containing title, body and username and sends back article that has been added', () => {
+        const postBody = {
+          title: 'This has worked',
+          body: 'Yep. This has definitely worked',
+          username: 'icellusedkars',
+        };
+        return request
+          .post('/api/topics/cats/articles')
+          .send(postBody)
+          .expect(201)
+          .then(({ body }) => {
+            expect(body).to.have.keys('article_id', 'title', 'body', 'votes', 'topic', 'username', 'created_at');
+          });
+      });
+      it('POST status 400 if unable to post due to the body not having the correct keys', () => {
+        const postBody = {
+          hello: 'This has worked',
+          body: 'Yep this has worked',
+          username: 'icellusedkars',
+        };
+        return request
+          .post('/api/topics/cats/articles')
+          .send(postBody)
+          .expect(400);
+      });
+      it('POST status 400 if unable to post due to the username not existing', () => {
+        const postBody = {
+          title: 'This has worked',
+          body: 'Yep this has worked',
+          username: 'ello',
+        };
+        return request
+          .post('/api/topics/cats/articles')
+          .send(postBody)
+          .expect(400);
+      });
     });
   });
 });
