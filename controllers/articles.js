@@ -2,9 +2,12 @@ const connection = require('../db/connection');
 
 exports.sendAllArticles = (req, res, next) => {
   connection('articles')
-    .select('author as username')
-    .then((username) => {
-      console.log(username);
+    .select('articles.username as author', 'title', 'articles.article_id', 'articles.body', 'articles.votes', 'articles.created_at', 'topic')
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .count('comments.comment_id as comment_count')
+    .groupBy('articles.article_id')
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
-    .cat
+    .catch(next);
 };

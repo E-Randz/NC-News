@@ -174,5 +174,13 @@ describe('/api', () => {
           expect(body.articles[0]).to.have.keys('author', 'title', 'article_id', 'body', 'votes', 'comment_count', 'created_at', 'topic');
         });
     });
+    it('GET status 200 has a default limit of 10', () => {
+      return request
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.have.length(10);
+        });
+    });
   });
 });
