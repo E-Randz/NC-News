@@ -17,7 +17,9 @@ const addTopic = (req, res, next) => {
     .then((topic) => {
       res.status(201).json({ topic });
     })
-    .catch(err => res.json(err));
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports = { sendTopics, addTopic };

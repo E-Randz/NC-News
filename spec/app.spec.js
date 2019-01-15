@@ -33,18 +33,30 @@ describe('/api', () => {
           expect(body.topic[0].slug).to.equal('Songs');
         });
     });
-    it('POST request status: 422 responds with error when unique id already exists in database', () => {
+    it('POST status 400 error when passed a malformed body', () => {
       const postBody = {
-        description: 'The man, the Mitch, the legend',
-        slug: 'mitch',
+        animal: 'Giraffe',
       };
       return request
         .post('/api/topics')
         .send(postBody)
-        .expect(422)
-        .then(({ body }) => {
-          console.log(body);
-        });
+        .expect(400);
+        // .then(({ body }) => {
+        //   expect(body.message).to.equal('');
+        // });
     });
+    // it('POST request status: 422 responds with error when unique id already exists in database', () => {
+    //   const postBody = {
+    //     description: 'The man, the Mitch, the legend',
+    //     slug: 'mitch',
+    //   };
+    //   return request
+    //     .post('/api/topics')
+    //     .send(postBody)
+    //     .expect(422)
+    //     .then(({ body }) => {
+    //       console.log(body);
+    //     });
+    // });
   });
 });
