@@ -182,5 +182,55 @@ describe('/api', () => {
           expect(body.articles).to.have.length(10);
         });
     });
+    it('GET status 200 and can specify limit', () => {
+      return request
+        .get('/api/articles?limit=2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).to.have.length(2);
+        });
+    });
+    it('GET status 200 defaults to sort_by created_at column and descending order', () => {
+      return request
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+          expect(body.articles[9].title).to.equal('Seven inspirational thought leaders from Manchester UK');
+        });
+    });
+    // it('GET status 200 can specify sort_by and order', () => {
+    //   return request
+    //     .get('/api/topics/mitch/articles?sort_by=title&order=asc')
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       expect(body.articles[0].title).to.equal('A');
+    //       expect(body.articles[9].title).to.equal('They\'re not exactly dogs, are they?');
+    //     });
+    // });
+    // it('GET status 200 returns results default offset of 0 pages', () => {
+    //   return request
+    //     .get('/api/topics/mitch/articles')
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+    //     });
+    // });
+    // it('GET status 200 returns results offset by page number', () => {
+    //   return request
+    //     .get('/api/topics/mitch/articles?p=2')
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       expect(body.articles[0].title).to.equal('Moustache');
+    //     });
+    // });
+    // it('GET status 200 ignores other queries that aren\'t valid', () => {
+    //   return request
+    //     .get('/api/topics/mitch/articles?hello=2')
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+    //     });
+    // });
   });
 });
