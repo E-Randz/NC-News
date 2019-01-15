@@ -61,12 +61,28 @@ describe('/api', () => {
             expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'body', 'votes', 'topic', 'username', 'created_at');
           });
       });
-      it.only('GET status 404 responds with err if request is in valid format but does not exist', () => {
+      it('GET status 404 responds with err if request is in valid format but does not exist', () => {
         return request
           .get('/api/topics/hello/articles')
           .expect(404)
           .then(({ body }) => {
-            expect(body.message).to.equal('topic not found');
+            expect(body.message).to.equal('articles not found');
+          });
+      });
+      it('GET status 200 has a default limit of 10', () => {
+        return request
+          .get('/api/topics/mitch/articles')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.have.length(10);
+          });
+      });
+      it('GET status 200 and can specify limit', () => {
+        return request
+          .get('/api/topics/mitch/articles?limit=4')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.have.length(4);
           });
       });
     });

@@ -21,16 +21,18 @@ const addTopic = (req, res, next) => {
 };
 
 const sendArticlesByTopic = (req, res, next) => {
+  console.log(req.query);
+  const { limit = 10 } = req.query;
   connection('articles')
     .select('articles.*')
     .where(req.params)
+    .limit(limit)
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
     .then((articles) => {
-      console.log(articles);
-      if (!articles.length) return Promise.reject({ status: 404, message: 'topic not found' })
-      res.status(200).send({ articles });
+      if (!articles.length) return Promise.reject({ status: 404, message: 'articles not found' });
+      return res.status(200).send({ articles });
     })
     .catch(next);
 };
