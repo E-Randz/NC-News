@@ -41,22 +41,16 @@ describe('/api', () => {
         .post('/api/topics')
         .send(postBody)
         .expect(400);
-        // .then(({ body }) => {
-        //   expect(body.message).to.equal('');
-        // });
     });
-    // it('POST request status: 422 responds with error when unique id already exists in database', () => {
-    //   const postBody = {
-    //     description: 'The man, the Mitch, the legend',
-    //     slug: 'mitch',
-    //   };
-    //   return request
-    //     .post('/api/topics')
-    //     .send(postBody)
-    //     .expect(422)
-    //     .then(({ body }) => {
-    //       console.log(body);
-    //     });
-    // });
+    it('POST request status: 422 responds with error when unique id already exists in database', () => {
+      const postBody = {
+        description: 'The man, the Mitch, the legend',
+        slug: 'mitch',
+      };
+      return request
+        .post('/api/topics')
+        .send(postBody)
+        .expect(422);
+    });
   });
 });
