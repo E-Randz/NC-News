@@ -21,11 +21,15 @@ const addTopic = (req, res, next) => {
 };
 
 const sendArticlesByTopic = (req, res, next) => {
-  const { limit = 10, sort_by = 'created_at', order = 'desc' } = req.query;
+  const {
+    limit = 10, sort_by = 'created_at', order = 'desc', p = 1,
+  } = req.query;
+  const offset = (p - 1) * limit;
   connection('articles')
     .select('articles.*')
     .where(req.params)
     .limit(limit)
+    .offset(offset)
     .orderBy(sort_by, order)
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count('comments.comment_id as comment_count')
