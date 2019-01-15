@@ -28,6 +28,8 @@ const sendArticlesByTopic = (req, res, next) => {
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
     .then((articles) => {
+      console.log(articles);
+      if (!articles.length) return Promise.reject({ status: 404, message: 'topic not found' })
       res.status(200).send({ articles });
     })
     .catch(next);

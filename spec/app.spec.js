@@ -61,6 +61,14 @@ describe('/api', () => {
             expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'body', 'votes', 'topic', 'username', 'created_at');
           });
       });
+      it.only('GET status 404 responds with err if request is in valid format but does not exist', () => {
+        return request
+          .get('/api/topics/hello/articles')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.message).to.equal('topic not found');
+          });
+      });
     });
   });
 });

@@ -9,3 +9,7 @@ exports.handle422 = (err, req, res, next) => {
   if (errCodes.includes(err.code)) res.status(422).send({ message: err.detail || err.toString() });
   else next(err);
 };
+
+exports.handle404 = (err, req, res, next) => {
+  if (err.status === 404) res.status(404).send({ message: err.message });
+};
