@@ -152,6 +152,17 @@ describe('/api', () => {
           .send(postBody)
           .expect(400);
       });
+      it('POST status 400 if unable to post due to the topic not existing', () => {
+        const postBody = {
+          title: 'This has worked',
+          body: 'Yep this has worked',
+          username: 'icellusedkars',
+        };
+        return request
+          .post('/api/topics/hi/articles')
+          .send(postBody)
+          .expect(400);
+      });
       it('POST status 400 if unable to post due to the username not existing', () => {
         const postBody = {
           title: 'This has worked',
@@ -199,31 +210,31 @@ describe('/api', () => {
           expect(body.articles[9].title).to.equal('Seven inspirational thought leaders from Manchester UK');
         });
     });
-    // it('GET status 200 can specify sort_by and order', () => {
-    //   return request
-    //     .get('/api/topics/mitch/articles?sort_by=title&order=asc')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //       expect(body.articles[0].title).to.equal('A');
-    //       expect(body.articles[9].title).to.equal('They\'re not exactly dogs, are they?');
-    //     });
-    // });
-    // it('GET status 200 returns results default offset of 0 pages', () => {
-    //   return request
-    //     .get('/api/topics/mitch/articles')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //       expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
-    //     });
-    // });
-    // it('GET status 200 returns results offset by page number', () => {
-    //   return request
-    //     .get('/api/topics/mitch/articles?p=2')
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //       expect(body.articles[0].title).to.equal('Moustache');
-    //     });
-    // });
+    it('GET status 200 can specify sort_by and order', () => {
+      return request
+        .get('/api/articles?sort_by=author&order=asc')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].author).to.equal('butter_bridge');
+          expect(body.articles[9].author).to.equal('rogersop');
+        });
+    });
+    it('GET status 200 returns results default offset of 0 pages', () => {
+      return request
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+        });
+    });
+    it('GET status 200 returns results offset by page number', () => {
+      return request
+        .get('/api/articles?p=2')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].title).to.equal('Am I a cat?');
+        });
+    });
     // it('GET status 200 ignores other queries that aren\'t valid', () => {
     //   return request
     //     .get('/api/topics/mitch/articles?hello=2')
