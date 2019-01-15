@@ -85,6 +85,15 @@ describe('/api', () => {
             expect(body.articles).to.have.length(4);
           });
       });
+      it('GET status 200 defaults to sort_by created_at column and descending order', () => {
+        return request
+          .get('/api/topics/mitch/articles')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+            expect(body.articles[9].title).to.equal('Am I a cat?');
+          });
+      });
     });
   });
 });
