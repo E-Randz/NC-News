@@ -1,3 +1,9 @@
+
+Questions for tomorrow
+- patch request doesn't return items in the correct format
+- when deleting an article, do I need to delete comments that go with it?
+-do we need article id in the comment object as well?
+
 # BE2-NC-Knews
 
 ## Northcoders News API

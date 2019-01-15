@@ -47,3 +47,16 @@ exports.updateVotes = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deleteArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  connection('articles')
+    .where('article_id', article_id)
+    .del()
+    .returning('*')
+    .then(([article]) => {
+      if (!article) return Promise.reject({ status: 404, message: 'Cannot delete. Article ID does not exist' });
+      return res.status(204).send();
+    })
+    .catch(next);
+};

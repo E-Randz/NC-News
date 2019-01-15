@@ -290,6 +290,50 @@ describe('/api', () => {
             expect(body.article.votes).to.equal(-70);
           });
       });
+      it('PATCH request status 404 responds with error if the article ID does not exist', () => {
+        const patchBody = {
+          inc_votes: -70,
+        };
+        return request
+          .patch('/api/articles/5656576')
+          .send(patchBody)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.message).to.equal('article could not be found');
+          });
+      });
+      it('DELETE request status 204 and no content responds when valid article id is specified', () => {
+        return request
+          .delete('/api/articles/2')
+          .expect(204)
+          .then(({ body }) => {
+            expect(body).to.eql({});
+          });
+      });
+      it('DELETE request status 404 when delete request to valid id format but does not exist in database', () => {
+        return request
+          .delete('/api/articles/787')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.message).to.equal('Cannot delete. Article ID does not exist');
+          });
+      });
+      it('DELETE request status 400 when delete request to invalid format but does not exist in database', () => {
+        return request
+          .delete('/api/articles/hejhge')
+          .expect(400);
+      });
+      describe.only('/comments', () => {
+        it('GET request 200 responds with array of comments for the given article id', () => {
+          return request
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+              expect(Array.isArray(body.comments)).to.equal(true);
+              expect(body.comments.every(comment => comment.article_id === 1)).to.equal(true);
+            });
+        });
+      });
     });
   });
 });
