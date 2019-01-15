@@ -17,9 +17,19 @@ const addTopic = (req, res, next) => {
     .then((topic) => {
       res.status(201).json({ topic });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
-module.exports = { sendTopics, addTopic };
+const sendArticlesByTopic = (req, res, next) => {
+  connection('articles')
+    .select('articles.*')
+    .where(req.params)
+    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+    .count('comments.comment_id as comment_count')
+    .groupBy('articles.article_id')
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+module.exports = { sendTopics, addTopic, sendArticlesByTopic };

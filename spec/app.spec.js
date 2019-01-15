@@ -52,5 +52,15 @@ describe('/api', () => {
         .send(postBody)
         .expect(422);
     });
+    describe.only('/:topic/articles', () => {
+      it('GET status 200 responds with articles for a given topic', () => {
+        return request
+          .get('/api/topics/mitch/articles')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'body', 'votes', 'topic', 'username', 'created_at');
+          });
+      });
+    });
   });
 });
