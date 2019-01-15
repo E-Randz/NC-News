@@ -28,7 +28,8 @@ exports.sendOneArticle = (req, res, next) => {
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
     .then(([article]) => {
-      res.status(200).send({ article });
+      if (!article) return Promise.reject({ status: 404, message: 'article could not be found' });
+      return res.status(200).send({ article });
     })
     .catch(next);
 };

@@ -253,6 +253,19 @@ describe('/api', () => {
             expect(body.article.title).to.equal('Sony Vaio; or, The Laptop');
           });
       });
+      it('GET request status 404 sends error if article id is valid but does not exist in database', () => {
+        return request
+          .get('/api/articles/7654455')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.message).to.equal('article could not be found');
+          });
+      });
+      it('GET request status 400 sends error if article id is in an invalid format', () => {
+        return request
+          .get('/api/articles/ahgvag')
+          .expect(400);
+      });
     });
   });
 });
