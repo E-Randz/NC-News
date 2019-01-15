@@ -266,6 +266,30 @@ describe('/api', () => {
           .get('/api/articles/ahgvag')
           .expect(400);
       });
+      it('PATCH request status 200 responds with article that has been updated with vote count increased', () => {
+        const patchBody = {
+          inc_votes: 1,
+        };
+        return request
+          .patch('/api/articles/3')
+          .send(patchBody)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.votes).to.equal(1);
+          });
+      });
+      it('PATCH request status 200 responds with article that has been updated with vote count increased', () => {
+        const patchBody = {
+          inc_votes: -70,
+        };
+        return request
+          .patch('/api/articles/4')
+          .send(patchBody)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.votes).to.equal(-70);
+          });
+      });
     });
   });
 });

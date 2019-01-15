@@ -1,10 +1,11 @@
 const articlesRouter = require('express')();
-const { sendAllArticles, sendOneArticle } = require('../controllers/articles');
+const { sendAllArticles, sendOneArticle, updateVotes } = require('../controllers/articles');
 
 articlesRouter.route('/')
   .get(sendAllArticles);
 
 articlesRouter.route('/:article_id')
-  .get(sendOneArticle);
+  .get(sendOneArticle)
+  .patch(updateVotes);
 
 module.exports = articlesRouter;

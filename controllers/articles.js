@@ -33,3 +33,17 @@ exports.sendOneArticle = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.updateVotes = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  connection('articles')
+    .where('articles.article_id', '=', article_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+    .then(([article]) => {
+      if (!article) return Promise.reject({ status: 404, message: 'article could not be found' });
+      return res.status(200).send({ article });
+    })
+    .catch(next);
+};
