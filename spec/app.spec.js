@@ -12,6 +12,8 @@ describe('/api', () => {
     .then(() => connection.migrate.latest())
     .then(() => connection.seed.run()));
   after(() => connection.destroy());
+
+  // <=====/API/TOPICS====>
   describe('/topics', () => {
     it('GET request status:200 responds with array of objects, each containing slug and description', () => {
       return request
@@ -52,6 +54,16 @@ describe('/api', () => {
         .send(postBody)
         .expect(422);
     });
+    it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
+      const invalidMethods = ['patch', 'delete', 'put'];
+      const url = '/api/topics';
+      const invalidRequests = invalidMethods.map((invalidMethod) => {
+        return request[invalidMethod](url).expect(405);
+      });
+      return Promise.all(invalidRequests);
+    });
+
+    // <=====/API/TOPICS/:TOPIC/ARTICLES====>
     describe('/:topic/articles', () => {
       it('GET status 200 responds with articles for a given topic', () => {
         return request
@@ -174,8 +186,18 @@ describe('/api', () => {
           .send(postBody)
           .expect(400);
       });
+      it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
+        const invalidMethods = ['patch', 'delete', 'put'];
+        const url = '/api/topics/mitch/articles';
+        const invalidRequests = invalidMethods.map((invalidMethod) => {
+          return request[invalidMethod](url).expect(405);
+        });
+        return Promise.all(invalidRequests);
+      });
     });
   });
+
+  // <=====/API/ARTICLES====>
   describe('/articles', () => {
     it('GET status 200 responds with articles containing the correct keys', () => {
       return request
@@ -243,7 +265,16 @@ describe('/api', () => {
           expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
         });
     });
-    describe.only('/:article_id', () => {
+    it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
+      const invalidMethods = ['patch', 'delete', 'put'];
+      const url = '/api/articles';
+      const invalidRequests = invalidMethods.map((invalidMethod) => {
+        return request[invalidMethod](url).expect(405);
+      });
+      return Promise.all(invalidRequests);
+    });
+    // <=====/API/ARTICLES/:ARTICLE_ID====>
+    describe('/:article_id', () => {
       it('GET request status 200 sends one article object when passed a valid id', () => {
         return request
           .get('/api/articles/2')
@@ -323,7 +354,17 @@ describe('/api', () => {
           .delete('/api/articles/hejhge')
           .expect(400);
       });
-      describe.only('/comments', () => {
+      it('INVALID REQUEST status 405 when doing post and put requests to specific ID', () => {
+        const invalidMethods = ['post', 'put'];
+        const url = '/api/articles/1';
+        const invalidRequests = invalidMethods.map((invalidMethod) => {
+          return request[invalidMethod](url).expect(405);
+        });
+        return Promise.all(invalidRequests);
+      });
+
+      // <=====/API/ARTICLES/:ARTICLE_ID/COMMENTS====>
+      describe('/comments', () => {
         it('GET request status 200 responds with array of comments for the given article id', () => {
           return request
             .get('/api/articles/1/comments')
@@ -448,7 +489,17 @@ describe('/api', () => {
             .send(postBody)
             .expect(400);
         });
-        describe.only('/:comment_id', () => {
+        it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
+          const invalidMethods = ['patch', 'delete', 'put'];
+          const url = '/api/articles/2/comments';
+          const invalidRequests = invalidMethods.map((invalidMethod) => {
+            return request[invalidMethod](url).expect(405);
+          });
+          return Promise.all(invalidRequests);
+        });
+
+        // <=====/API/ARTICLES/:ARTICLE_ID/COMMENTS/:COMMENT_ID====>
+        describe('/:comment_id', () => {
           it('PATCH request status 200 responds with comment that has been updated with vote count increased', () => {
             const patchBody = {
               inc_votes: 1,
@@ -473,39 +524,67 @@ describe('/api', () => {
                 expect(body.comment.votes).to.equal(4);
               });
           });
-          // it('PATCH request status 404 responds with error if the article ID does not exist', () => {
-          //   const patchBody = {
-          //     inc_votes: -70,
-          //   };
-          //   return request
-          //     .patch('/api/articles/5656576')
-          //     .send(patchBody)
-          //     .expect(404)
-          //     .then(({ body }) => {
-          //       expect(body.message).to.equal('article could not be found');
-          //     });
-          // });
-          // it('DELETE request status 204 and no content responds when valid article id is specified', () => {
-          //   return request
-          //     .delete('/api/articles/2')
-          //     .expect(204)
-          //     .then(({ body }) => {
-          //       expect(body).to.eql({});
-          //     });
-          // });
-          // it('DELETE request status 404 when delete request to valid id format but does not exist in database', () => {
-          //   return request
-          //     .delete('/api/articles/787')
-          //     .expect(404)
-          //     .then(({ body }) => {
-          //       expect(body.message).to.equal('Cannot delete. Article ID does not exist');
-          //     });
-          // });
-          // it('DELETE request status 400 when delete request to invalid format but does not exist in database', () => {
-          //   return request
-          //     .delete('/api/articles/hejhge')
-          //     .expect(400);
-          // });
+          it('PATCH request status 404 responds with error if the article ID does not exist', () => {
+            const patchBody = {
+              inc_votes: -70,
+            };
+            return request
+              .patch('/api/articles/68787/comments/2')
+              .send(patchBody)
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.message).to.equal('comment could not be found');
+              });
+          });
+          it('PATCH request status 404 responds with error if the comment ID does not exist', () => {
+            const patchBody = {
+              inc_votes: -70,
+            };
+            return request
+              .patch('/api/articles/1/comments/6556')
+              .send(patchBody)
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.message).to.equal('comment could not be found');
+              });
+          });
+          it('DELETE request status 204 and no content responds when valid article id is specified', () => {
+            return request
+              .delete('/api/articles/1/comments/2')
+              .expect(204)
+              .then(({ body }) => {
+                expect(body).to.eql({});
+              });
+          });
+          it('DELETE request status 404 when article_id exists but comment_id does not', () => {
+            return request
+              .delete('/api/articles/1/comments/67867')
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.message).to.equal('Cannot delete. Article or Comment ID does not exist');
+              });
+          });
+          it('DELETE request status 404 when article_id does not exist', () => {
+            return request
+              .delete('/api/articles/576587/comments/2')
+              .expect(404)
+              .then(({ body }) => {
+                expect(body.message).to.equal('Cannot delete. Article or Comment ID does not exist');
+              });
+          });
+          it('DELETE request status 400 when delete request to invalid format', () => {
+            return request
+              .delete('/api/articles/hejhge/comments/hggh')
+              .expect(400);
+          });
+          it('INVALID REQUEST status 405 when doing get, post and put requests to specific ID', () => {
+            const invalidMethods = ['get', 'post', 'put'];
+            const url = '/api/articles/2/comments/1';
+            const invalidRequests = invalidMethods.map((invalidMethod) => {
+              return request[invalidMethod](url).expect(405);
+            });
+            return Promise.all(invalidRequests);
+          });
         });
       });
     });

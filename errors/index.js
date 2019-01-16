@@ -18,3 +18,7 @@ exports.handle404 = (err, req, res, next) => {
 exports.handle500 = (err, req, res, next) => {
   res.status(500).send({ message: 'Server Error' });
 };
+
+exports.handle405 = (req, res, next) => {
+  res.status(405).send({ message: 'Invalid Method on URL' });
+};

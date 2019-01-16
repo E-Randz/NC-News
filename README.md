@@ -1,8 +1,9 @@
 
 Questions for tomorrow
-- patch request doesn't return items in the correct format
-- when deleting an article, do I need to delete comments that go with it?
+- patch request doesn't return items in the correct format - put it in returning
+- when deleting an article, do I need to delete comments that go with it? - onDelete('CASCADE')
 -do we need article id in the comment object as well?
+- add new test for valid sort criteria
 
 # BE2-NC-Knews
 

@@ -33,15 +33,30 @@ exports.addNewComment = (req, res, next) => {
 };
 
 exports.updateCommentVotes = (req, res, next) => {
-  const { comment_id } = req.params;
+  const { comment_id, article_id } = req.params;
   const { inc_votes } = req.body;
   connection('comments')
     .where('comments.comment_id', '=', comment_id)
+    .andWhere('comments.article_id', '=', article_id)
     .increment('votes', inc_votes)
     .returning('*')
     .then(([comment]) => {
       if (!comment) return Promise.reject({ status: 404, message: 'comment could not be found' });
       return res.status(200).send({ comment });
+    })
+    .catch(next);
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id, article_id } = req.params;
+  connection('comments')
+    .where('comment_id', comment_id)
+    .andWhere('comments.article_id', '=', article_id)
+    .del()
+    .returning('*')
+    .then(([comment]) => {
+      if (!comment) return Promise.reject({ status: 404, message: 'Cannot delete. Article or Comment ID does not exist' });
+      return res.status(204).send();
     })
     .catch(next);
 };
