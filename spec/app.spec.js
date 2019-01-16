@@ -346,6 +346,64 @@ describe('/api', () => {
             .get('/api/articles/jhkuffgh/comments')
             .expect(400);
         });
+        it('GET status 200 has a default limit of 10', () => {
+          return request
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments).to.have.length(10);
+            });
+        });
+        it('GET status 200 and can specify limit', () => {
+          return request
+            .get('/api/articles/1/comments?limit=3')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments).to.have.length(3);
+            });
+        });
+        it('GET status 200 defaults to sort_by created_at column and descending order', () => {
+          return request
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments[0].body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+              expect(body.comments[9].body).to.equal('Ambidextrous marsupial');
+            });
+        });
+        it('GET status 200 can specify sort_by and order', () => {
+          return request
+            .get('/api/articles/1/comments?sort_by=votes&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments[0].votes).to.equal(-100);
+              expect(body.comments[9].votes).to.equal(0);
+            });
+        });
+        it('GET status 200 returns results default offset of 0 pages', () => {
+          return request
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments[0].body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            });
+        });
+        it('GET status 200 returns results offset by page number', () => {
+          return request
+            .get('/api/articles/1/comments?limit=4&p=2')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments[0].body).to.equal('I hate streaming eyes even more');
+            });
+        });
+        it('GET status 200 ignores other queries that aren\'t valid', () => {
+          return request
+            .get('/api/articles/9/comments?heythere=ghfassa')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.comments.length).to.equal(2);
+            });
+        });
       });
     });
   });
