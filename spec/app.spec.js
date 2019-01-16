@@ -333,13 +333,18 @@ describe('/api', () => {
               expect(body.comments.every(comment => comment.article_id === 1)).to.equal(true);
             });
         });
-        it('GET request status 404 responds with valid article id but article', () => {
+        it('GET request status 404 responds when passed valid article id but article does not exist', () => {
           return request
             .get('/api/articles/69669/comments')
             .expect(404)
             .then(({ body }) => {
-              expect(body.message).to.equal('Comments could not be found for this article ID');
+              expect(body.message).to.equal('Article ID could not be found');
             });
+        });
+        it('GET request status 400 responds with valid article id but article', () => {
+          return request
+            .get('/api/articles/jhkuffgh/comments')
+            .expect(400);
         });
       });
     });
