@@ -418,6 +418,36 @@ describe('/api', () => {
               expect(body).to.have.keys('body', 'username', 'article_id', 'votes', 'created_at', 'comment_id');
             });
         });
+        it('POST status 400 if unable to post due to the body not having the correct keys', () => {
+          const postBody = {
+            hello: 'This has worked',
+            body: 'Yep this has worked',
+          };
+          return request
+            .post('/api/articles/2/comments')
+            .send(postBody)
+            .expect(400);
+        });
+        it('POST status 400 if unable to post due to the article not existing', () => {
+          const postBody = {
+            username: 'icellusedkars',
+            body: 'this is the comment',
+          };
+          return request
+            .post('/api/articles/8896/comments')
+            .send(postBody)
+            .expect(400);
+        });
+        it('POST status 400 if unable to post due to the username not existing', () => {
+          const postBody = {
+            body: 'Yep this has worked',
+            username: 'ello',
+          };
+          return request
+            .post('/api/articles/2/comments')
+            .send(postBody)
+            .expect(400);
+        });
       });
     });
   });
