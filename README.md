@@ -4,6 +4,7 @@ Questions for tomorrow
 - when deleting an article, do I need to delete comments that go with it? - onDelete('CASCADE')
 -do we need article id in the comment object as well?
 - add new test for valid sort criteria
+- test for invalid methods - done!
 
 # BE2-NC-Knews
 

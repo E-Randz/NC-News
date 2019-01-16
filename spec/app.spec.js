@@ -589,4 +589,17 @@ describe('/api', () => {
       });
     });
   });
+
+  // <========/API/USERS==========>
+  describe.only('/users', () => {
+    it('GET status 200 responds with array of user objects', () => {
+      return request
+        .get('/api/users')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.users.length).to.equal(3);
+          expect(body.users[0]).to.have.keys('username', 'avatar_url', 'name');
+        });
+    });
+  });
 });
