@@ -13,6 +13,14 @@ describe('/api', () => {
     .then(() => connection.seed.run()));
   after(() => connection.destroy());
 
+  it.only('GET status 200 responds with JSON describing all available endpoints in API', () => {
+    return request
+      .get('/api')
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.endpoints).to.be.an('object');
+      });
+  });
   // <=====/API/TOPICS====>
   describe('/topics', () => {
     it('GET request status:200 responds with array of objects, each containing slug and description', () => {
@@ -333,12 +341,19 @@ describe('/api', () => {
             expect(body.message).to.equal('article could not be found');
           });
       });
-      it('DELETE request status 204 and no content responds when valid article id is specified', () => {
+      it.only('DELETE request status 204 and no content responds when valid article id is specified', () => {
         return request
-          .delete('/api/articles/2')
+          .delete('/api/articles/1')
           .expect(204)
           .then(({ body }) => {
             expect(body).to.eql({});
+            // use connection object
+            connection('comments')
+              .select('*')
+              .where('comments.article_id', '=', '1')
+              .then((comments) => {
+                expect(comments.length).to.equal(0);
+              });
           });
       });
       it('DELETE request status 404 when delete request to valid id format but does not exist in database', () => {
@@ -591,7 +606,7 @@ describe('/api', () => {
   });
 
   // <========/API/USERS==========>
-  describe.only('/users', () => {
+  describe('/users', () => {
     it('GET status 200 responds with array of user objects', () => {
       return request
         .get('/api/users')
@@ -600,6 +615,43 @@ describe('/api', () => {
           expect(body.users.length).to.equal(3);
           expect(body.users[0]).to.have.keys('username', 'avatar_url', 'name');
         });
+    });
+    it('INVALID REQUEST status 405 when doing patch, put and delete requests to specific ID', () => {
+      const invalidMethods = ['patch', 'delete', 'put'];
+      const url = '/api/users';
+      const invalidRequests = invalidMethods.map((invalidMethod) => {
+        return request[invalidMethod](url).expect(405);
+      });
+      return Promise.all(invalidRequests);
+    });
+
+    // <=======/API/USERS/:USERNAME=========>
+    describe('/:username', () => {
+      it('GET status 200 responds with object containing correct user', () => {
+        return request
+          .get('/api/users/icellusedkars')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.user.username).to.equal('icellusedkars');
+            expect(body.user).to.have.keys('username', 'avatar_url', 'name');
+          });
+      });
+      it('GET status 404 responds with error if username in valid syntax but does not exist', () => {
+        return request
+          .get('/api/users/768687')
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.message).to.equal('user with the provided username does not exist');
+          });
+      });
+      it('INVALID REQUEST status 405 when doing patch, put and delete requests to specific ID', () => {
+        const invalidMethods = ['post', 'patch', 'put', 'delete'];
+        const url = '/api/users/icellusedkars';
+        const invalidRequests = invalidMethods.map((invalidMethod) => {
+          return request[invalidMethod](url).expect(405);
+        });
+        return Promise.all(invalidRequests);
+      });
     });
   });
 });

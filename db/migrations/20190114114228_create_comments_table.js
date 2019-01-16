@@ -13,6 +13,7 @@ exports.up = function (knex, Promise) {
     commentTable
       .integer('article_id')
       .references('articles.article_id')
+      .onDelete('CASCADE')
       .notNullable();
     commentTable
       .integer('votes')
