@@ -404,6 +404,20 @@ describe('/api', () => {
               expect(body.comments.length).to.equal(2);
             });
         });
+        it('POST request status 201 accepts a username and body and returns the newly added comment', () => {
+          const postBody = {
+            username: 'icellusedkars',
+            body: 'this is the comment',
+          };
+          return request
+            .post('/api/articles/2/comments')
+            .send(postBody)
+            .expect(201)
+            .then(({ body }) => {
+              expect(body.comment_id).to.equal(19);
+              expect(body).to.have.keys('body', 'username', 'article_id', 'votes', 'created_at', 'comment_id');
+            });
+        });
       });
     });
   });

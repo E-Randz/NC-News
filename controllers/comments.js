@@ -18,3 +18,16 @@ exports.sendAllComments = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.addNewComment = (req, res, next) => {
+  const newComment = { article_id: req.params.article_id, ...req.body };
+  connection('comments')
+    .insert(newComment)
+    .returning('*')
+    .then(([comment]) => {
+      // console.log(comment);
+      if (!comment) return Promise.reject({ status: 404, message: `unable to post to ${req.params.article_id} check that article id exists` });
+      return res.status(201).send(comment);
+    })
+    .catch(next);
+};
