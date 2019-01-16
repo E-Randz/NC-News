@@ -31,3 +31,17 @@ exports.addNewComment = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.updateCommentVotes = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  connection('comments')
+    .where('comments.comment_id', '=', comment_id)
+    .increment('votes', inc_votes)
+    .returning('*')
+    .then(([comment]) => {
+      if (!comment) return Promise.reject({ status: 404, message: 'comment could not be found' });
+      return res.status(200).send({ comment });
+    })
+    .catch(next);
+};
