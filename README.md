@@ -263,6 +263,10 @@ GET /api
 
 - Serves JSON describing all the available endpoints on your API
 
+{
+    "/api/topics" : "serving an array of topics objects"
+}
+
 ### Step 3 - Hosting
 
 Make sure your application and your database is hosted using heroku
