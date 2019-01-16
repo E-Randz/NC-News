@@ -324,13 +324,21 @@ describe('/api', () => {
           .expect(400);
       });
       describe.only('/comments', () => {
-        it('GET request 200 responds with array of comments for the given article id', () => {
+        it('GET request status 200 responds with array of comments for the given article id', () => {
           return request
             .get('/api/articles/1/comments')
             .expect(200)
             .then(({ body }) => {
               expect(Array.isArray(body.comments)).to.equal(true);
               expect(body.comments.every(comment => comment.article_id === 1)).to.equal(true);
+            });
+        });
+        it('GET request status 404 responds with valid article id but article', () => {
+          return request
+            .get('/api/articles/69669/comments')
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.message).to.equal('Comments could not be found for this article ID');
             });
         });
       });

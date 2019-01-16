@@ -6,7 +6,8 @@ exports.sendAllComments = (req, res, next) => {
     .select('comments.username as author', 'comments.article_id', 'comments.body', 'comments.votes', 'comments.created_at')
     .where('comments.article_id', '=', article_id)
     .then((comments) => {
-      res.status(200).send({ comments });
+      if (!comments.length) return Promise.reject({ status: 404, message: 'Comments could not be found for this article ID' });
+      return res.status(200).send({ comments });
     })
     .catch(next);
 };
