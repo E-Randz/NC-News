@@ -1,5 +1,5 @@
 exports.handle400 = (err, req, res, next) => {
-  const errCodes = ['42703', '23503', '22P02', '23502'];
+  const errCodes = ['42703', '22P02', '23502'];
   if (errCodes.includes(err.code) || err.status === 400) {
     res.status(400).send({ message: err.detail || err.toString() });
   } else next(err);
@@ -12,8 +12,10 @@ exports.handle422 = (err, req, res, next) => {
 };
 
 exports.handle404 = (err, req, res, next) => {
-  if (err.status === 404) res.status(404).send({ message: err.message });
-  else next(err);
+  const errCodes = ['23503'];
+  if (err.status === 404 || errCodes.includes(err.code)) {
+    res.status(404).send({ message: err.message });
+  } else next(err);
 };
 
 exports.handle500 = (err, req, res, next) => {

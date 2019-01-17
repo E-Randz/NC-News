@@ -7,6 +7,7 @@ exports.sendAllArticles = (req, res, next) => {
   const checkOrder = ['asc', 'desc'];
   if (!checkSort.includes(sort_by)) sort_by = 'created_at';
   if (!checkOrder.includes(order)) order = 'desc';
+  if (!/[0-9]+/.test(limit) || !/-*[0-9]/.test(p)) return next({ status: 400, message: 'invalid limit or page number' });
   const offset = (p - 1) * limit;
   connection('articles')
     .select('articles.username as author', 'title', 'articles.article_id', 'articles.votes', 'articles.created_at', 'topic')

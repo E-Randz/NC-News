@@ -190,7 +190,16 @@ describe('/api', () => {
           .send(postBody)
           .expect(400);
       });
-      it.skip('POST status 404 if unable to post due to the topic not existing', () => {
+      it('POST status 400 if unable to post due to the body missing some keys', () => {
+        const postBody = {
+          title: 'Where did my body go?',
+        };
+        return request
+          .post('/api/topics/cats/articles')
+          .send(postBody)
+          .expect(400);
+      });
+      it('POST status 404 if unable to post due to the topic not existing', () => {
         const postBody = {
           title: 'This has worked',
           body: 'Yep this has worked',
@@ -201,14 +210,14 @@ describe('/api', () => {
           .send(postBody)
           .expect(404);
       });
-      it.skip('POST status 400 if trying to post empty object', () => {
+      it('POST status 400 if trying to post empty object', () => {
         const postBody = {};
         return request
           .post('/api/topics/mitch/articles')
           .send(postBody)
           .expect(400);
       });
-      it('POST status 400 if unable to post due to the username not existing', () => {
+      it('POST status 404 if unable to post due to the username not existing', () => {
         const postBody = {
           title: 'This has worked',
           body: 'Yep this has worked',
@@ -217,7 +226,7 @@ describe('/api', () => {
         return request
           .post('/api/topics/cats/articles')
           .send(postBody)
-          .expect(400);
+          .expect(404);
       });
       it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
         const invalidMethods = ['patch', 'delete', 'put'];
@@ -299,13 +308,10 @@ describe('/api', () => {
           expect(body.articles[0].title).to.equal('UNCOVERED: catspiracy to bring down democracy');
         });
     });
-    it('GET status 200 ignores other queries that aren\'t valid', () => {
+    it('GET status 400 if limit and p queries are invalid', () => {
       return request
-        .get('/api/articles?hello=2')
-        .expect(200)
-        .then(({ body }) => {
-          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
-        });
+        .get('/api/articles?limit=hey&p=120')
+        .expect(400);
     });
     it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
       const invalidMethods = ['patch', 'delete', 'put'];
@@ -535,7 +541,7 @@ describe('/api', () => {
             .send(postBody)
             .expect(400);
         });
-        it('POST status 400 if unable to post due to the article not existing', () => {
+        it('POST status 404 if unable to post due to the article not existing', () => {
           const postBody = {
             username: 'icellusedkars',
             body: 'this is the comment',
@@ -543,9 +549,9 @@ describe('/api', () => {
           return request
             .post('/api/articles/8896/comments')
             .send(postBody)
-            .expect(400);
+            .expect(404);
         });
-        it('POST status 400 if unable to post due to the username not existing', () => {
+        it('POST status 404 if unable to post due to the username not existing', () => {
           const postBody = {
             body: 'Yep this has worked',
             username: 'ello',
@@ -553,7 +559,7 @@ describe('/api', () => {
           return request
             .post('/api/articles/2/comments')
             .send(postBody)
-            .expect(400);
+            .expect(404);
         });
         it('INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID', () => {
           const invalidMethods = ['patch', 'delete', 'put'];
