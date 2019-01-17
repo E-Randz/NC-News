@@ -14,7 +14,7 @@ const addTopic = (req, res, next) => {
   connection('topics')
     .insert(newTopic)
     .returning('*')
-    .then((topic) => {
+    .then(([topic]) => {
       res.status(201).json({ topic });
     })
     .catch(next);

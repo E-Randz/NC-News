@@ -13,7 +13,7 @@ describe('/api', () => {
     .then(() => connection.seed.run()));
   after(() => connection.destroy());
 
-  it.only('GET status 200 responds with JSON describing all available endpoints in API', () => {
+  it('GET status 200 responds with JSON describing all available endpoints in API', () => {
     return request
       .get('/api')
       .expect(200)
@@ -39,8 +39,8 @@ describe('/api', () => {
         .send(postBody)
         .expect(201)
         .then(({ body }) => {
-          expect(body.topic[0]).to.have.keys('slug', 'description');
-          expect(body.topic[0].slug).to.equal('Songs');
+          expect(body.topic).to.have.keys('slug', 'description');
+          expect(body.topic.slug).to.equal('Songs');
         });
     });
     it('POST status 400 error when passed a malformed body', () => {
@@ -341,7 +341,7 @@ describe('/api', () => {
             expect(body.message).to.equal('article could not be found');
           });
       });
-      it.only('DELETE request status 204 and no content responds when valid article id is specified', () => {
+      it('DELETE request status 204 and no content responds when valid article id is specified', () => {
         return request
           .delete('/api/articles/1')
           .expect(204)
