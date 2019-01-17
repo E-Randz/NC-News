@@ -28,10 +28,10 @@ const sendArticlesByTopic = (req, res, next) => {
   const checkOrder = ['asc', 'desc'];
   if (!checkSort.includes(sort_by)) sort_by = 'created_at';
   if (!checkOrder.includes(order)) order = 'desc';
-
+  if (!/[0-9]+/.test(limit) || !/-*[0-9]/.test(p)) return next({ status: 400, message: 'invalid limit or page number' });
   const offset = (p - 1) * limit;
-  connection('articles')
-    .select('articles.article_id', 'title', 'articles.votes', 'topic', 'articles.username', 'articles.created_at')
+  return connection('articles')
+    .select('articles.article_id', 'title', 'articles.votes', 'topic', 'articles.username as author', 'articles.created_at')
     .where(req.params)
     .limit(limit)
     .orderBy(sort_by, order)

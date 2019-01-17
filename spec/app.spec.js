@@ -87,7 +87,7 @@ describe('/api', () => {
           .get('/api/topics/mitch/articles')
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'votes', 'topic', 'username', 'created_at');
+            expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'votes', 'topic', 'author', 'created_at');
           });
       });
       it('GET status 404 responds with err if request is in valid format but does not exist', () => {
@@ -113,6 +113,11 @@ describe('/api', () => {
           .then(({ body }) => {
             expect(body.articles).to.have.length(4);
           });
+      });
+      it('GET status 400 if malformed p or limit', () => {
+        return request
+          .get('/api/topics/mitch/articles?limit=hey&p=what')
+          .expect(400);
       });
       it('GET status 200 defaults to sort_by created_at column and descending order', () => {
         return request
@@ -285,7 +290,7 @@ describe('/api', () => {
     });
     it('GET status 200 ignores invalid sort by and order queries', () => {
       return request
-        .get('/api/articles?sort_by=test&order=what')
+        .get('/api/articles?sort_by=hgigiuy865&order=qwtfitqw')
         .expect(200)
         .then(({ body }) => {
           expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
@@ -454,7 +459,7 @@ describe('/api', () => {
               expect(body.message).to.equal('Article ID could not be found');
             });
         });
-        it('GET request status 400 responds with valid article id but article', () => {
+        it('GET request status 400 responds with invalid article id', () => {
           return request
             .get('/api/articles/jhkuffgh/comments')
             .expect(400);
@@ -605,7 +610,7 @@ describe('/api', () => {
               .send(patchBody)
               .expect(400);
           });
-          it('PATCH request status 400 if no body is sent', () => {
+          it('PATCH request status 200 if no body is sent', () => {
             return request
               .patch('/api/articles/1/comments/2')
               .send({})
