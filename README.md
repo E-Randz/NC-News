@@ -275,4 +275,7 @@ Make sure your application and your database is hosted using heroku
 
 Finally, you should write a README for this project (and remove this one). The README should be broken down like this: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
 
-It should also include the link where your herokuapp is hosted.
+It should also include the link where your herokuapp is hosted
+
+- in delete request check with a connection that delete is actually deleting the field
+- 

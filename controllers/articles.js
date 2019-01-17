@@ -9,7 +9,7 @@ exports.sendAllArticles = (req, res, next) => {
   if (!checkOrder.includes(order)) order = 'desc';
   if (!/[0-9]+/.test(limit) || !/-*[0-9]/.test(p)) return next({ status: 400, message: 'invalid limit or page number' });
   const offset = (p - 1) * limit;
-  connection('articles')
+  return connection('articles')
     .select('articles.username as author', 'title', 'articles.article_id', 'articles.votes', 'articles.created_at', 'topic')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count('comments.comment_id as comment_count')
@@ -42,8 +42,8 @@ exports.updateVotes = (req, res, next) => {
   const { article_id } = req.params;
   let { inc_votes } = req.body;
   if (!inc_votes) inc_votes = 0;
-  if (/[^\-0-9]+/.test(inc_votes)) next({ status: 400, detail: 'vote increment/ decrement should be a number' });
-  connection('articles')
+  if (/[^\-0-9]+/.test(inc_votes)) return next({ status: 400, detail: 'vote increment/ decrement should be a number' });
+  return connection('articles')
     .where('articles.article_id', '=', article_id)
     .increment('votes', inc_votes)
     .returning('*')
