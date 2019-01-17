@@ -363,6 +363,24 @@ describe('/api', () => {
             expect(body.article.votes).to.equal(-70);
           });
       });
+      it('PATCH request status 400 if inc_votes query is invalid', () => {
+        const patchBody = {
+          inc_votes: 'hello',
+        };
+        return request
+          .patch('/api/articles/4')
+          .send(patchBody)
+          .expect(400);
+      });
+      it('PATCH request status 200 returns unmodified body if no vote is passed', () => {
+        return request
+          .patch('/api/articles/1')
+          .send()
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article.votes).to.equal(100);
+          });
+      });
       it('PATCH request status 404 responds with error if the article ID does not exist', () => {
         const patchBody = {
           inc_votes: -70,
@@ -419,8 +437,7 @@ describe('/api', () => {
             .get('/api/articles/1/comments')
             .expect(200)
             .then(({ body }) => {
-              expect(Array.isArray(body.comments)).to.equal(true);
-              expect(body.comments.every(comment => comment.article_id === 1)).to.equal(true);
+              expect(body.comments[0]).to.have.keys('author', 'body', 'created_at', 'votes', 'comment_id');
             });
         });
         it('GET request status 404 responds when passed valid article id but article does not exist', () => {
@@ -504,8 +521,8 @@ describe('/api', () => {
             .send(postBody)
             .expect(201)
             .then(({ body }) => {
-              expect(body.comment_id).to.equal(19);
-              expect(body).to.have.keys('body', 'username', 'article_id', 'votes', 'created_at', 'comment_id');
+              expect(body.comment.comment_id).to.equal(19);
+              expect(body.comment).to.have.keys('body', 'username', 'article_id', 'votes', 'created_at', 'comment_id');
             });
         });
         it('POST status 400 if unable to post due to the body not having the correct keys', () => {
@@ -571,6 +588,24 @@ describe('/api', () => {
               .expect(200)
               .then(({ body }) => {
                 expect(body.comment.votes).to.equal(4);
+              });
+          });
+          it('PATCH request status 400 if inc_votes is not a number', () => {
+            const patchBody = {
+              inc_votes: 'vjhhvjh',
+            };
+            return request
+              .patch('/api/articles/1/comments/2')
+              .send(patchBody)
+              .expect(400);
+          });
+          it('PATCH request status 400 if no body is sent', () => {
+            return request
+              .patch('/api/articles/1/comments/2')
+              .send({})
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comment.votes).to.equal(14);
               });
           });
           it('PATCH request status 404 responds with error if the article ID does not exist', () => {

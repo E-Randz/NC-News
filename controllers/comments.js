@@ -7,7 +7,7 @@ exports.sendAllComments = (req, res, next) => {
   const { article_id } = req.params;
   const offset = (p - 1) * limit;
   connection('comments')
-    .select('comments.username as author', 'comments.article_id', 'comments.body', 'comments.votes', 'comments.created_at')
+    .select('comments.username as author', 'comments.body', 'comments.votes', 'comments.created_at', 'comments.comment_id')
     .where('comments.article_id', '=', article_id)
     .limit(limit)
     .offset(offset)
@@ -27,14 +27,16 @@ exports.addNewComment = (req, res, next) => {
     .then(([comment]) => {
       // console.log(comment);
       if (!comment) return Promise.reject({ status: 404, message: `unable to post to ${req.params.article_id} check that article id exists` });
-      return res.status(201).send(comment);
+      return res.status(201).send({ comment });
     })
     .catch(next);
 };
 
 exports.updateCommentVotes = (req, res, next) => {
   const { comment_id, article_id } = req.params;
-  const { inc_votes } = req.body;
+  let { inc_votes } = req.body;
+  if (!inc_votes) inc_votes = 0;
+  if (/[^\-0-9]+/.test(inc_votes)) next({ status: 400, detail: 'vote increment/ decrement should be a number' });
   connection('comments')
     .where('comments.comment_id', '=', comment_id)
     .andWhere('comments.article_id', '=', article_id)

@@ -39,7 +39,9 @@ exports.sendOneArticle = (req, res, next) => {
 
 exports.updateVotes = (req, res, next) => {
   const { article_id } = req.params;
-  const { inc_votes } = req.body;
+  let { inc_votes } = req.body;
+  if (!inc_votes) inc_votes = 0;
+  if (/[^\-0-9]+/.test(inc_votes)) next({ status: 400, detail: 'vote increment/ decrement should be a number' });
   connection('articles')
     .where('articles.article_id', '=', article_id)
     .increment('votes', inc_votes)

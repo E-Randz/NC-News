@@ -1,7 +1,8 @@
 exports.handle400 = (err, req, res, next) => {
   const errCodes = ['42703', '23503', '22P02', '23502'];
-  if (errCodes.includes(err.code)) res.status(400).send({ message: err.detail || err.toString() });
-  else next(err);
+  if (errCodes.includes(err.code) || err.status === 400) {
+    res.status(400).send({ message: err.detail || err.toString() });
+  } else next(err);
 };
 
 exports.handle422 = (err, req, res, next) => {
