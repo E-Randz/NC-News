@@ -21,16 +21,21 @@ const addTopic = (req, res, next) => {
 };
 
 const sendArticlesByTopic = (req, res, next) => {
-  const {
-    limit = 10, sort_by = 'created_at', order = 'desc', p = 1,
-  } = req.query;
+  const { limit = 10, p = 1 } = req.query;
+  let { sort_by = 'created_at', order = 'desc' } = req.query;
+
+  const checkSort = ['article_id', 'title', 'votes', 'topic', 'username', 'created_at'];
+  const checkOrder = ['asc', 'desc'];
+  if (!checkSort.includes(sort_by)) sort_by = 'created_at';
+  if (!checkOrder.includes(order)) order = 'desc';
+
   const offset = (p - 1) * limit;
   connection('articles')
-    .select('articles.*')
+    .select('articles.article_id', 'title', 'articles.votes', 'topic', 'articles.username', 'articles.created_at')
     .where(req.params)
     .limit(limit)
-    .offset(offset)
     .orderBy(sort_by, order)
+    .offset(offset)
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
@@ -49,7 +54,7 @@ const addNewArticle = (req, res, next) => {
     .then(([article]) => {
       // console.log(article);
       if (!article) return Promise.reject({ status: 404, message: `unable to post to ${req.params.topic} check that topic exists` });
-      return res.status(201).send(article);
+      return res.status(201).send({ article });
     })
     .catch(next);
 };

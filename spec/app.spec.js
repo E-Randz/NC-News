@@ -52,6 +52,15 @@ describe('/api', () => {
         .send(postBody)
         .expect(400);
     });
+    it('POST status 400 error when some keys are missing', () => {
+      const postBody = {
+        slug: 'test',
+      };
+      return request
+        .post('/api/topics')
+        .send(postBody)
+        .expect(400);
+    });
     it('POST request status: 422 responds with error when unique id already exists in database', () => {
       const postBody = {
         description: 'The man, the Mitch, the legend',
@@ -78,7 +87,7 @@ describe('/api', () => {
           .get('/api/topics/mitch/articles')
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'body', 'votes', 'topic', 'username', 'created_at');
+            expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'votes', 'topic', 'username', 'created_at');
           });
       });
       it('GET status 404 responds with err if request is in valid format but does not exist', () => {
@@ -123,6 +132,15 @@ describe('/api', () => {
             expect(body.articles[9].title).to.equal('They\'re not exactly dogs, are they?');
           });
       });
+      it('GET status 200 ignores invalid sort by and order queries', () => {
+        return request
+          .get('/api/topics/mitch/articles?sort_by=test&order=what')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+            expect(body.articles[9].title).to.equal('Am I a cat?');
+          });
+      });
       it('GET status 200 returns results default offset of 0 pages', () => {
         return request
           .get('/api/topics/mitch/articles')
@@ -158,7 +176,7 @@ describe('/api', () => {
           .send(postBody)
           .expect(201)
           .then(({ body }) => {
-            expect(body).to.have.keys('article_id', 'title', 'body', 'votes', 'topic', 'username', 'created_at');
+            expect(body.article).to.have.keys('article_id', 'title', 'body', 'votes', 'topic', 'username', 'created_at');
           });
       });
       it('POST status 400 if unable to post due to the body not having the correct keys', () => {
@@ -172,7 +190,7 @@ describe('/api', () => {
           .send(postBody)
           .expect(400);
       });
-      it('POST status 400 if unable to post due to the topic not existing', () => {
+      it.skip('POST status 404 if unable to post due to the topic not existing', () => {
         const postBody = {
           title: 'This has worked',
           body: 'Yep this has worked',
@@ -180,6 +198,13 @@ describe('/api', () => {
         };
         return request
           .post('/api/topics/hi/articles')
+          .send(postBody)
+          .expect(404);
+      });
+      it.skip('POST status 400 if trying to post empty object', () => {
+        const postBody = {};
+        return request
+          .post('/api/topics/mitch/articles')
           .send(postBody)
           .expect(400);
       });
@@ -212,7 +237,7 @@ describe('/api', () => {
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
-          expect(body.articles[0]).to.have.keys('author', 'title', 'article_id', 'body', 'votes', 'comment_count', 'created_at', 'topic');
+          expect(body.articles[0]).to.have.keys('author', 'title', 'article_id', 'votes', 'comment_count', 'created_at', 'topic');
         });
     });
     it('GET status 200 has a default limit of 10', () => {
@@ -247,6 +272,15 @@ describe('/api', () => {
         .then(({ body }) => {
           expect(body.articles[0].author).to.equal('butter_bridge');
           expect(body.articles[9].author).to.equal('rogersop');
+        });
+    });
+    it('GET status 200 ignores invalid sort by and order queries', () => {
+      return request
+        .get('/api/articles?sort_by=test&order=what')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
+          expect(body.articles[9].title).to.equal('Seven inspirational thought leaders from Manchester UK');
         });
     });
     it('GET status 200 returns results default offset of 0 pages', () => {

@@ -4,7 +4,7 @@ const articlesRouter = require('./articles');
 const usersRouter = require('./users');
 const { sendEndpoints } = require('../controllers/api');
 
-apiRouter.use('/', sendEndpoints);
+apiRouter.get('/', sendEndpoints);
 apiRouter.use('/topics', topicsRouter);
 apiRouter.use('/articles', articlesRouter);
 apiRouter.use('/users', usersRouter);

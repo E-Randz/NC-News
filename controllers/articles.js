@@ -1,12 +1,15 @@
 const connection = require('../db/connection');
 
 exports.sendAllArticles = (req, res, next) => {
-  const {
-    limit = 10, sort_by = 'created_at', order = 'desc', p = 1,
-  } = req.query;
+  const { limit = 10, p = 1 } = req.query;
+  let { sort_by = 'created_at', order = 'desc' } = req.query;
+  const checkSort = ['article_id', 'title', 'votes', 'topic', 'author', 'created_at'];
+  const checkOrder = ['asc', 'desc'];
+  if (!checkSort.includes(sort_by)) sort_by = 'created_at';
+  if (!checkOrder.includes(order)) order = 'desc';
   const offset = (p - 1) * limit;
   connection('articles')
-    .select('articles.username as author', 'title', 'articles.article_id', 'articles.body', 'articles.votes', 'articles.created_at', 'topic')
+    .select('articles.username as author', 'title', 'articles.article_id', 'articles.votes', 'articles.created_at', 'topic')
     .leftJoin('comments', 'comments.article_id', 'articles.article_id')
     .count('comments.comment_id as comment_count')
     .groupBy('articles.article_id')
