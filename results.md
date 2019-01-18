@@ -1,5 +1,5 @@
 
-> BE2-NC-Knews@1.0.0 test /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
+> BE2-NC-Knews@1.0.0 test 
 > mocha ./spec/*.spec.js
 
 
@@ -8,7 +8,7 @@
     ✓ GET status 200 responds with JSON describing all available endpoints in API
     /topics
       ✓ GET request status:200 responds with array of objects, each containing slug and description
-      ✓ POST request status: 201 responds with the new object that was added (59ms)
+      ✓ POST request status: 201 responds with the new object that was added
       ✓ POST status 400 error when passed a malformed body
       ✓ POST status 400 error when some keys are missing
       ✓ POST request status: 422 responds with error when unique id already exists in database
@@ -18,6 +18,7 @@
         ✓ GET status 404 responds with err if request is in valid format but does not exist
         ✓ GET status 200 has a default limit of 10
         ✓ GET status 200 and can specify limit
+        ✓ GET status 400 if malformed p or limit
         ✓ GET status 200 defaults to sort_by created_at column and descending order
         ✓ GET status 200 can specify sort_by and order
         ✓ GET status 200 ignores invalid sort by and order queries
@@ -26,9 +27,10 @@
         ✓ GET status 200 ignores other queries that aren't valid
         ✓ POST status 201 accepts an object containing title, body and username and sends back article that has been added
         ✓ POST status 400 if unable to post due to the body not having the correct keys
+        ✓ POST status 400 if unable to post due to the body missing some keys
         ✓ POST status 404 if unable to post due to the topic not existing
         ✓ POST status 400 if trying to post empty object
-        1) POST status 400 if unable to post due to the username not existing
+        ✓ POST status 404 if unable to post due to the username not existing
         ✓ INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID
     /articles
       ✓ GET status 200 responds with articles containing the correct keys
@@ -39,7 +41,7 @@
       ✓ GET status 200 ignores invalid sort by and order queries
       ✓ GET status 200 returns results default offset of 0 pages
       ✓ GET status 200 returns results offset by page number
-      ✓ GET status 200 ignores other queries that aren't valid
+      ✓ GET status 400 if limit and p queries are invalid
       ✓ INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID
       /:article_id
         ✓ GET request status 200 sends one article object when passed a valid id
@@ -57,7 +59,7 @@
         /comments
           ✓ GET request status 200 responds with array of comments for the given article id
           ✓ GET request status 404 responds when passed valid article id but article does not exist
-          ✓ GET request status 400 responds with valid article id but article
+          ✓ GET request status 400 responds with invalid article id
           ✓ GET status 200 has a default limit of 10
           ✓ GET status 200 and can specify limit
           ✓ GET status 200 defaults to sort_by created_at column and descending order
@@ -67,14 +69,14 @@
           ✓ GET status 200 ignores other queries that aren't valid
           ✓ POST request status 201 accepts a username and body and returns the newly added comment
           ✓ POST status 400 if unable to post due to the body not having the correct keys
-          2) POST status 400 if unable to post due to the article not existing
-          3) POST status 400 if unable to post due to the username not existing
+          ✓ POST status 404 if unable to post due to the article not existing
+          ✓ POST status 404 if unable to post due to the username not existing
           ✓ INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID
           /:comment_id
             ✓ PATCH request status 200 responds with comment that has been updated with vote count increased
             ✓ PATCH request status 200 responds with article that has been updated with vote count decreased
             ✓ PATCH request status 400 if inc_votes is not a number
-            ✓ PATCH request status 400 if no body is sent
+            ✓ PATCH request status 200 if no body is sent
             ✓ PATCH request status 404 responds with error if the article ID does not exist
             ✓ PATCH request status 404 responds with error if the comment ID does not exist
             ✓ DELETE request status 204 and no content responds when valid article id is specified
@@ -91,46 +93,17 @@
         ✓ INVALID REQUEST status 405 when doing patch, put and delete requests to specific ID
 
 
-  73 passing (12s)
-  3 failing
-
-  1) /api
-       /topics
-         /:topic/articles
-           POST status 400 if unable to post due to the username not existing:
-     Error: expected 400 "Bad Request", got 404 "Not Found"
-      at Test._assertStatus (node_modules/supertest/lib/test.js:268:12)
-      at Test._assertFunction (node_modules/supertest/lib/test.js:283:11)
-      at Test.assert (node_modules/supertest/lib/test.js:173:18)
-      at Server.localAssert (node_modules/supertest/lib/test.js:131:12)
-      at emitCloseNT (net.js:1626:8)
-      at process.internalTickCallback (internal/process/next_tick.js:72:19)
-
-  2) /api
-       /articles
-         /:article_id
-           /comments
-             POST status 400 if unable to post due to the article not existing:
-     Error: expected 400 "Bad Request", got 404 "Not Found"
-      at Test._assertStatus (node_modules/supertest/lib/test.js:268:12)
-      at Test._assertFunction (node_modules/supertest/lib/test.js:283:11)
-      at Test.assert (node_modules/supertest/lib/test.js:173:18)
-      at Server.localAssert (node_modules/supertest/lib/test.js:131:12)
-      at emitCloseNT (net.js:1626:8)
-      at process.internalTickCallback (internal/process/next_tick.js:72:19)
-
-  3) /api
-       /articles
-         /:article_id
-           /comments
-             POST status 400 if unable to post due to the username not existing:
-     Error: expected 400 "Bad Request", got 404 "Not Found"
-      at Test._assertStatus (node_modules/supertest/lib/test.js:268:12)
-      at Test._assertFunction (node_modules/supertest/lib/test.js:283:11)
-      at Test.assert (node_modules/supertest/lib/test.js:173:18)
-      at Server.localAssert (node_modules/supertest/lib/test.js:131:12)
-      at emitCloseNT (net.js:1626:8)
-      at process.internalTickCallback (internal/process/next_tick.js:72:19)
+  78 passing (13s)
 
 
+> BE2-NC-Knews@1.0.0 posttest 
+> npm run lint
+
+
+> BE2-NC-Knews@1.0.0 lint 
+> eslint ./
+
+  6:3  warning  Unexpected console statement  no-console
+
+✖ 1 problem (0 errors, 1 warning)
 
