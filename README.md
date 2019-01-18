@@ -188,7 +188,7 @@ http://localhost:9090/api
 This will give you a list of the available endpoints, which are also listed below. 
 _**to make POST, PATCH and DELETE requests, you will likely need to use Postman**_
 
-```json
+```js
 {
   '/api': {
     GET: 'serving a list of endpoints and available methods',
