@@ -38,16 +38,26 @@ This project uses the following software, which will need to be installed before
     ```bash
     node -v
     ```
-4. **Mocha**
+3. **Mocha v5.2.0**
+    - Testing framework for JavaScript.
+    - https://mochajs.org/
+    - To install globally
+    ```bash
+    npm i -g mocha
+    ```
+    - To install locally, navigate to the root of the project and run:
+    ```bash
+    npm i mocha
+    ```
 
-3. **VS Code (optional)**
+4. **VS Code (optional)**
     * This project was created in VS Code. Please either install this or use your preferred text editor.
     * https://code.visualstudio.com/download
-4. **A browser**
+5. **A browser**
     - Google Chrome was used in the development of this API.
     - https://www.google.com/chrome/
 
-5. **Postman** 
+6. **Postman** 
     - Useful to make requests to the API
     - https://www.getpostman.com/downloads/
 
