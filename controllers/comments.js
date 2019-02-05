@@ -13,7 +13,7 @@ exports.sendAllComments = (req, res, next) => {
     .offset(offset)
     .orderBy(sort_by, order)
     .then((comments) => {
-      if (!comments.length) return Promise.reject({ status: 404, message: 'Article ID could not be found' });
+      if (!comments.length) return Promise.reject({ status: 404, message: 'No comments for this article' });
       return res.status(200).send({ comments });
     })
     .catch(next);

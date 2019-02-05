@@ -456,7 +456,7 @@ describe('/api', () => {
             .get('/api/articles/69669/comments')
             .expect(404)
             .then(({ body }) => {
-              expect(body.message).to.equal('Article ID could not be found');
+              expect(body.message).to.equal('No comments for this article');
             });
         });
         it('GET request status 400 responds with invalid article id', () => {
