@@ -732,6 +732,15 @@ describe('/api', () => {
         });
         return Promise.all(invalidRequests);
       });
+      describe('/articles', () => {
+        it.only('fetches all article for a given username', () => {
+          return request.get('/api/users/jessjelly/articles')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles.length).to.equal(7);
+            })
+        });
+      });
     });
   });
 });
