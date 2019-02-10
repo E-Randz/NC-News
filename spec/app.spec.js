@@ -733,12 +733,17 @@ describe('/api', () => {
         return Promise.all(invalidRequests);
       });
       describe('/articles', () => {
-        it.only('fetches all article for a given username', () => {
-          return request.get('/api/users/jessjelly/articles')
+        it('fetches all article for a given username', () => {
+          return request.get('/api/users/butter_bridge/articles')
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles.length).to.equal(7);
-            })
+              expect(body.articles.length).to.equal(3);
+            });
+        });
+        it.only('GET status 404 responds with error if username in valid syntax but does not exist', () => {
+          return request
+            .get('/api/users/768687/articles')
+            .expect(404);
         });
       });
     });

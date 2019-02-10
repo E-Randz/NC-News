@@ -20,3 +20,15 @@ exports.sendOneUser = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.sendUserArticles = (req, res, next) => {
+  const { username } = req.params;
+  connection('articles')
+    .select('*')
+    .where('articles.username', '=', username)
+    .then(( articles ) => {
+      if (!articles.length) return Promise.reject({ status: 404, message: 'no articles for this user' });
+      return res.status(200).send({ articles });
+    })
+    .catch(next);
+}
