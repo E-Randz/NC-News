@@ -26,9 +26,9 @@ exports.sendUserArticles = (req, res, next) => {
   connection('articles')
     .select('*')
     .where('articles.username', '=', username)
-    .then(( articles ) => {
+    .then((articles) => {
       if (!articles.length) return Promise.reject({ status: 404, message: 'no articles for this user' });
       return res.status(200).send({ articles });
     })
     .catch(next);
-}
+};
