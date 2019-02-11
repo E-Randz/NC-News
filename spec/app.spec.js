@@ -732,7 +732,7 @@ describe('/api', () => {
         });
         return Promise.all(invalidRequests);
       });
-      describe('/articles', () => {
+      describe.only('/articles', () => {
         it('fetches all article for a given username', () => {
           return request.get('/api/users/butter_bridge/articles')
             .expect(200)
@@ -740,7 +740,7 @@ describe('/api', () => {
               expect(body.articles.length).to.equal(3);
             });
         });
-        it.only('GET status 404 responds with error if username in valid syntax but does not exist', () => {
+        it('GET status 404 responds with error if username in valid syntax but does not exist', () => {
           return request
             .get('/api/users/768687/articles')
             .expect(404);
