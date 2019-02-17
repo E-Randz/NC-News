@@ -443,4 +443,4 @@ const production = require('./<production-data-path>');
 
 ## Acknowledgments
 
-* Thank you to all the lovely people at Northcoders who helped throughout this project.
+* Thank you to all the lovely staff at Northcoders.
