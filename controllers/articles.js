@@ -9,16 +9,22 @@ exports.sendAllArticles = (req, res, next) => {
   if (!checkOrder.includes(order)) order = 'desc';
   if (!/[0-9]+/.test(limit) || !/-*[0-9]/.test(p)) return next({ status: 400, message: 'invalid limit or page number' });
   const offset = (p - 1) * limit;
+  let article_count;
   return connection('articles')
-    .select('articles.username as author', 'title', 'articles.article_id', 'articles.votes', 'articles.created_at', 'topic')
-    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-    .count('comments.comment_id as comment_count')
-    .groupBy('articles.article_id')
-    .limit(limit)
-    .offset(offset)
-    .orderBy(sort_by, order)
+    .count('articles.article_id as count')
+    .then(([{ count }]) => {
+      article_count = +count;
+      return connection('articles')
+        .select('articles.username as author', 'title', 'articles.article_id', 'articles.votes', 'articles.created_at', 'topic')
+        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+        .count('comments.comment_id as comment_count')
+        .groupBy('articles.article_id')
+        .limit(limit)
+        .offset(offset)
+        .orderBy(sort_by, order);
+    })
     .then((articles) => {
-      res.status(200).send({ articles });
+      res.status(200).send({ articles, article_count });
     })
     .catch(next);
 };
