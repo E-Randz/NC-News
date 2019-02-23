@@ -30,18 +30,25 @@ const sendArticlesByTopic = (req, res, next) => {
   if (!checkOrder.includes(order)) order = 'desc';
   if (!/[0-9]+/.test(limit) || !/-*[0-9]/.test(p)) return next({ status: 400, message: 'invalid limit or page number' });
   const offset = (p - 1) * limit;
+  let article_count;
   return connection('articles')
-    .select('articles.article_id', 'title', 'articles.votes', 'topic', 'articles.username as author', 'articles.created_at')
+    .count('articles.article_id as count')
     .where(req.params)
-    .limit(limit)
-    .orderBy(sort_by, order)
-    .offset(offset)
-    .leftJoin('comments', 'comments.article_id', 'articles.article_id')
-    .count('comments.comment_id as comment_count')
-    .groupBy('articles.article_id')
+    .then(([{ count }]) => {
+      article_count = +count;
+      return connection('articles')
+        .select('articles.article_id', 'title', 'articles.votes', 'topic', 'articles.username as author', 'articles.created_at')
+        .where(req.params)
+        .limit(limit)
+        .orderBy(sort_by, order)
+        .offset(offset)
+        .leftJoin('comments', 'comments.article_id', 'articles.article_id')
+        .count('comments.comment_id as comment_count')
+        .groupBy('articles.article_id');
+    })
     .then((articles) => {
       if (!articles.length) return Promise.reject({ status: 404, message: 'articles not found' });
-      return res.status(200).send({ articles });
+      return res.status(200).send({ articles, article_count });
     })
     .catch(next);
 };
