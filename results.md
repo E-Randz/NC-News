@@ -1,5 +1,3 @@
-
-> BE2-NC-Knews@1.0.0 test 
 > mocha ./spec/*.spec.js
 
 
@@ -41,6 +39,7 @@
       ✓ GET status 200 ignores invalid sort by and order queries
       ✓ GET status 200 returns results default offset of 0 pages
       ✓ GET status 200 returns results offset by page number
+      ✓ GET status 200 returns article count with the array of articles
       ✓ GET status 400 if limit and p queries are invalid
       ✓ INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID
       /:article_id
@@ -91,19 +90,11 @@
         ✓ GET status 200 responds with object containing correct user
         ✓ GET status 404 responds with error if username in valid syntax but does not exist
         ✓ INVALID REQUEST status 405 when doing patch, put and delete requests to specific ID
+        /articles
+          ✓ fetches all article for a given username
+          ✓ GET status 404 responds with error if username in valid syntax but does not exist
 
 
-  78 passing (13s)
+  81 passing (12s)
 
-
-> BE2-NC-Knews@1.0.0 posttest 
-> npm run lint
-
-
-> BE2-NC-Knews@1.0.0 lint 
-> eslint ./
-
-  6:3  warning  Unexpected console statement  no-console
-
-✖ 1 problem (0 errors, 1 warning)
 
