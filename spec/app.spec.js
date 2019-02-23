@@ -90,6 +90,14 @@ describe('/api', () => {
             expect(body.articles[0]).to.have.keys('article_id', 'title', 'comment_count', 'votes', 'topic', 'author', 'created_at');
           });
       });
+      it('GET status 200 returns article count with the array of articles', () => {
+        return request
+          .get('/api/topics/mitch/articles')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.article_count).to.equal(11);
+          });
+      });
       it('GET status 404 responds with err if request is in valid format but does not exist', () => {
         return request
           .get('/api/topics/hello/articles')
