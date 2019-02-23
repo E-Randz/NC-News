@@ -313,6 +313,14 @@ describe('/api', () => {
           expect(body.articles[0].title).to.equal('UNCOVERED: catspiracy to bring down democracy');
         });
     });
+    it('GET status 200 returns article count with the array of articles', () => {
+      return request
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article_count).to.equal(12);
+        });
+    });
     it('GET status 400 if limit and p queries are invalid', () => {
       return request
         .get('/api/articles?limit=hey&p=120')
@@ -732,7 +740,7 @@ describe('/api', () => {
         });
         return Promise.all(invalidRequests);
       });
-      describe.only('/articles', () => {
+      describe('/articles', () => {
         it('fetches all article for a given username', () => {
           return request.get('/api/users/butter_bridge/articles')
             .expect(200)
