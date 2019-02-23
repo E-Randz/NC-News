@@ -59,7 +59,6 @@ const addNewArticle = (req, res, next) => {
     .insert(newArticle)
     .returning('*')
     .then(([article]) => {
-      // console.log(article);
       if (!article) return Promise.reject({ status: 404, message: `unable to post to ${req.params.topic} check that topic exists` });
       return res.status(201).send({ article });
     })

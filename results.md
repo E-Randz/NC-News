@@ -1,3 +1,5 @@
+
+> NC_News@1.0.0 test /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
 > mocha ./spec/*.spec.js
 
 
@@ -13,6 +15,7 @@
       ✓ INVALID REQUEST status 405 when doing patch, delete and put requests to specific ID
       /:topic/articles
         ✓ GET status 200 responds with articles for a given topic
+        ✓ GET status 200 returns article count with the array of articles
         ✓ GET status 404 responds with err if request is in valid format but does not exist
         ✓ GET status 200 has a default limit of 10
         ✓ GET status 200 and can specify limit
@@ -95,6 +98,19 @@
           ✓ GET status 404 responds with error if username in valid syntax but does not exist
 
 
-  81 passing (12s)
+  82 passing (12s)
 
+
+> NC_News@1.0.0 posttest /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
+> npm run lint
+
+
+> NC_News@1.0.0 lint /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
+> eslint ./
+
+
+/Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews/listen.js
+  6:3  warning  Unexpected console statement  no-console
+
+✖ 1 problem (0 errors, 1 warning)
 

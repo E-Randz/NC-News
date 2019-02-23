@@ -25,7 +25,6 @@ exports.addNewComment = (req, res, next) => {
     .insert(newComment)
     .returning('*')
     .then(([comment]) => {
-      // console.log(comment);
       if (!comment) return Promise.reject({ status: 404, message: `unable to post to ${req.params.article_id} check that article id exists` });
       return res.status(201).send({ comment });
     })
