@@ -1,5 +1,4 @@
 
-> NC_News@1.0.0 test /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
 > mocha ./spec/*.spec.js
 
 
@@ -99,18 +98,4 @@
 
 
   82 passing (12s)
-
-
-> NC_News@1.0.0 posttest /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
-> npm run lint
-
-
-> NC_News@1.0.0 lint /Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews
-> eslint ./
-
-
-/Users/emma/Documents/northcoders/BACK-END-02/BE2-NC-Knews/listen.js
-  6:3  warning  Unexpected console statement  no-console
-
-✖ 1 problem (0 errors, 1 warning)
 
